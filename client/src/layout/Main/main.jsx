@@ -5,6 +5,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useHandleEquipamentMoviment from '../../hooks/useHandleEquipamentMoviment';
 import EquipmentsNav from '../EquipmentsNav/equipmentsnav';
+import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
 
 // Fix for default marker icons in React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -28,8 +29,9 @@ const createCustomMarkerIcon = (color) => {
 const Main = () => {
 
     const { equipments } = useHandleEquipamentMoviment()
+    const { _equipments } = useHandleEquipmentBehavior()
 
-    useEffect(() => { console.log('eq', equipments) }, [equipments])
+    //useEffect(() => { console.log('eq', _equipments) }, [_equipments])
 
     const [center, setCenter] = useState([0, 0]);
     const [zoom] = useState(11);
