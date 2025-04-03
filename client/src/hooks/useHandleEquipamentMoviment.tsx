@@ -12,7 +12,7 @@ type Equipment = {
 }
 
 type LastEquipamentPosition = {
-    equipamentModelName: string
+    equipmentModelName: string
     name: string
     equipmentId: string
     position: {date: string, lat: number, lon: number}
@@ -43,7 +43,7 @@ const useHandleEquipamentMoviment = () => {
             const initialPosition = equipmentPositions?.positions[0]
             const path = equipmentPositions?.positions.map((pos) => [pos?.lat, pos?.lon])
 
-            const _equipamentModel = equipamentModel.find((eq) => eq.id === equipmentModelId)
+            const _equipmentModel = equipamentModel.find((eq) => eq.id === equipmentModelId)
 
             const _equipmentStatesHistory = equipmentStateHistory.find((eq) => eq.equipmentId === id)
             const lastState = _equipmentStatesHistory?.states[_equipmentStatesHistory?.states?.length - 1]
@@ -52,7 +52,7 @@ const useHandleEquipamentMoviment = () => {
             const obj = {
                 name: name || '',
                 equipmentId: id,
-                equipamentModelName: _equipamentModel?.name || '',
+                equipmentModelName: _equipmentModel?.name || '',
                 position: {date: initialPosition?.date || '', lat: initialPosition?.lat || 0, lon: initialPosition?.lon || 0},
                 lastState: {name: _lastEquipmentState?.name || '', color: _lastEquipmentState?.color || ''},
                 path: path,

@@ -1,16 +1,21 @@
 import React from 'react'
 import './equipmentsnav.css'
-import useHandleEquipamentMoviment from '../../hooks/useHandleEquipamentMoviment';
 
 interface EquipmentsNavProps {
     handleVisibleEquipments: (id: string) => void;
     visibleEquipmentsIds: string[];
     toggleAllEquipments: () => void;
-}
+    equipments: {
+        name: string;
+        equipmentId: string;
+        equipmentModelName: string;
+        position: { date: string; lat: number; lon: number };
+        color: string;
+        lastState: { name: string; color: string };
+    }[];
+};
 
-const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, visibleEquipmentsIds, toggleAllEquipments }) => {
-
-    const { equipments } = useHandleEquipamentMoviment()
+const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, visibleEquipmentsIds, toggleAllEquipments, equipments }) => {
 
     return (
         <div id="equipments-nav">
@@ -20,28 +25,30 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, 
             <article>
                 {
                     equipments?.map(equipment => (
-                        <div 
+                        <div
                             key={equipment.equipmentId}
                             className='equipment'
-                        >   
-                            <button 
-                                onClick={() => handleVisibleEquipments(equipment.equipmentId)}
-                                className='toggle-button'
-                                style={{color: equipment.color}}
-                            >
-                                <span>a</span>
-                            </button>
-                            <p>{equipment.name}</p>
-                            <button
-                                className=''
-                            >
-                                {`>`}
-                            </button>
+                            style={{ borderLeft: `5px solid ${equipment?.color}` }}
+                        >
+                            <div className='equipment-name'>
+                                <p>{`${equipment.name} - ${equipment?.equipmentModelName}`}</p>
+                                <b>Equipment</b>
+                            </div>
+                            <div className='equipment-infos'>
+                                <section>
+                                    <p>{equipment?.lastState?.name}</p>
+                                    <b>State</b>
+                                </section>
+                                <section>
+                                    <p>{equipment?.lastState?.name}</p>
+                                    <b>State</b>
+                                </section>
+                            </div>
                         </div>
                     ))
                 }
             </article>
-            <button 
+            <button
                 onClick={() => toggleAllEquipments()}
                 className='toggle-all-button'
             >

@@ -56,7 +56,7 @@ const Main = () => {
 
         const interval = setInterval(() => {
             setTimeCount(prev => prev + 1)
-        }, 10000);
+        }, 2000);
       
         return () => clearInterval(interval);
     }, [equipments])
