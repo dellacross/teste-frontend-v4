@@ -1,0 +1,6 @@
+#map-wrapper {
+    display: flex;
+    height: 100%;
+    width: calc(100% - 75px);
+    overflow: hidden;
+}
