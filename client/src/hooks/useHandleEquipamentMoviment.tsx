@@ -18,11 +18,21 @@ type LastEquipamentPosition = {
     position: {date: string, lat: number, lon: number}
     lastState: {name: string, color: string}
     path: number[][] | undefined
+    color: string
 }
 
 const useHandleEquipamentMoviment = () => {
 
     const [equipments, setEquipments] = useState<LastEquipamentPosition[]>([])
+
+    const generateRandomColor = (): string => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
 
     useEffect(() => {
 
@@ -45,7 +55,8 @@ const useHandleEquipamentMoviment = () => {
                 equipamentModelName: _equipamentModel?.name || '',
                 position: {date: initialPosition?.date || '', lat: initialPosition?.lat || 0, lon: initialPosition?.lon || 0},
                 lastState: {name: _lastEquipmentState?.name || '', color: _lastEquipmentState?.color || ''},
-                path: path
+                path: path,
+                color: generateRandomColor()
             }
 
             hash.push(obj)

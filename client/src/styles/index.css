@@ -11,6 +11,10 @@ body, html {
   box-sizing: border-box;
 }
 
+button {
+  cursor: pointer;
+}
+
 :root {
   --primary-color: #141414;
   --secondary-color: #1D1D1D;

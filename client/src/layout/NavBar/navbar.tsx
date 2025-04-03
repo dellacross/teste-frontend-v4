@@ -5,10 +5,10 @@ import AikoLogo from '../../assets/img/aiko.png'
 const NavBar = () => {
   return (
     <div id="nav-bar">
-        <img 
-            src={AikoLogo} 
-            alt='aiko-logo'
-        />    
+      <img 
+        src={AikoLogo} 
+        alt='aiko-logo'
+      />    
     </div>
   )
 }

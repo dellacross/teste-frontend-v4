@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useHandleEquipamentMoviment from '../../hooks/useHandleEquipamentMoviment';
+import EquipmentsNav from '../EquipmentsNav/equipmentsnav';
 
 // Fix for default marker icons in React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -13,6 +14,16 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
+const createCustomMarkerIcon = (color) => {
+  return L.divIcon({
+    html: `<svg viewBox="0 0 24 24" width="24" height="24" stroke="${color}" fill="${color}" stroke-width="2">
+             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+           </svg>`,
+    className: '',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24]
+  });
+};
 
 const Main = () => {
 
@@ -21,8 +32,10 @@ const Main = () => {
     useEffect(() => { console.log('eq', equipments) }, [equipments])
 
     const [center, setCenter] = useState([0, 0]);
+    const [zoom] = useState(11);
     const [timeCount, setTimeCount] = useState(1);
     const [loading, setLoading] = useState(true)
+    const [visibleEquipmentsIds, setVisibleEquipmentsIds] = useState([])
 
     useEffect(() => {
         if (equipments?.length === 0) return
@@ -31,19 +44,12 @@ const Main = () => {
         const lat = firstEquipment?.position?.lat;
         const lon = firstEquipment?.position?.lon;
         setCenter([lat, lon]);
+
         setLoading(false)
+
+        setVisibleEquipmentsIds(equipments.map(equipament => equipament.equipmentId))
     }, [equipments])
 
-    const [zoom] = useState(11);
-
-    const generateRandomColor = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
 
     useEffect(() => {
         if(!equipments) return
@@ -54,6 +60,19 @@ const Main = () => {
       
         return () => clearInterval(interval);
     }, [equipments])
+
+    const handleVisibleEquipments = (equipamentId) => {
+        setVisibleEquipmentsIds(prev =>
+            prev.includes(equipamentId)
+                ? prev.filter(id => id !== equipamentId)
+                : [...prev, equipamentId]
+        );
+    }
+
+    const toggleAllEquipments = () => {
+        if(visibleEquipmentsIds.length > 0) setVisibleEquipmentsIds([])
+        else setVisibleEquipmentsIds(equipments.map(equipament => equipament.equipmentId))
+    }
 
     return (
         <div id="map-wrapper">
@@ -70,28 +89,29 @@ const Main = () => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         {
-                            equipments.map(item => (
-                                <React.Fragment key={item.equipmentId}>
+                            equipments.map(equipament => (
+                                visibleEquipmentsIds.includes(equipament.equipmentId) &&
+                                <React.Fragment key={equipament.equipmentId}>
                                     <Marker 
                                         position={[
-                                            item?.path?.slice(0, timeCount)[timeCount-1][0], 
-                                            item?.path?.slice(0, timeCount)[timeCount-1][1]
+                                            equipament?.path?.slice(0, timeCount)[timeCount-1][0], 
+                                            equipament?.path?.slice(0, timeCount)[timeCount-1][1]
                                         ]} 
-                                        color={item?.lastState?.color}
+                                        icon={createCustomMarkerIcon(equipament?.lastState?.color)}
                                     >
                                         <Popup>
                                             <div>
-                                                <h3>{item.name}</h3>
-                                                <p>Status: {item?.lastState?.name}</p>
-                                                <p>Latitude: {item?.path?.slice(0, timeCount)[timeCount-1][0].toFixed(6)}</p>
-                                                <p>Longitude: {item?.path?.slice(0, timeCount)[timeCount-1][1].toFixed(6)}</p>
-                                                <p>Last update: {item?.position?.date}</p>
+                                                <h3>{equipament.name}</h3>
+                                                <p>Status: {equipament?.lastState?.name}</p>
+                                                <p>Latitude: {equipament?.path?.slice(0, timeCount)[timeCount-1][0].toFixed(6)}</p>
+                                                <p>Longitude: {equipament?.path?.slice(0, timeCount)[timeCount-1][1].toFixed(6)}</p>
+                                                <p>Last update: {equipament?.position?.date}</p>
                                             </div>
                                         </Popup>
                                     </Marker>
                                     <Polyline
-                                        positions={item?.path?.slice(0, timeCount)}
-                                        color={item?.lastState?.color}
+                                        positions={equipament?.path?.slice(0, timeCount)}
+                                        color={equipament?.color}
                                     />
                                 </React.Fragment>
                             ))
@@ -100,6 +120,12 @@ const Main = () => {
                     </MapContainer>
                 </div>
             }
+            <EquipmentsNav 
+                handleVisibleEquipments={handleVisibleEquipments} 
+                visibleEquipmentsIds={visibleEquipmentsIds}
+                toggleAllEquipments={toggleAllEquipments}
+                equipments={equipments}
+            />
         </div>
     )
 }

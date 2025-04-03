@@ -1,0 +1,85 @@
+#equipments-nav {
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    width: 500px;
+    position: fixed;
+    right: 20px;
+    top: 2.5%;
+    background-color: #1E1E1E;
+    z-index: 999;
+    border-radius: 10px;
+    padding: 20px;
+    gap: 10px;
+}
+
+#equipments-nav > header {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#equipments-nav > header > h1 {
+    font-size: 20px;
+    color: white;
+    margin: 0;
+}
+
+#equipments-nav > article {
+    height: 100%;
+}
+
+#equipments-nav > article > div.equipment {
+    width: 100%;
+    display: flex;
+    padding: 5px 0;
+    border-radius: 10px;
+    color: #fff;
+}
+
+#equipments-nav > article > div.equipment p {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0;
+    background-color: var(--tertiary-color);
+    padding: 0 10px;
+    border-radius: 10px 0 0 10px;
+    font-size: 1.1rem;
+}
+
+#equipments-nav > article > div.equipment button {
+    font-size: 2rem;
+    background-color: transparent;
+    border: none;
+    background-color: var(--tertiary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#equipments-nav > article > div.equipment button.toggle-button {
+    border-radius: 50%;
+    min-height: 40px;
+    min-width: 40px;
+    margin-right: 20px;
+}
+
+#equipments-nav > article > div.equipment button:last-child {
+    border-radius: 0 10px 10px 0;
+    padding-right: 10px;
+    color: #fff;
+}
+
+#equipments-nav > button.toggle-all-button {
+    height: 50px;
+    background-color: #003184;
+    border-radius: 10px;
+    padding: 5px 12px;
+    color: #fff;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
