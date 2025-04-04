@@ -40,6 +40,19 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors }) => 
 
     const { totalHours } = useHandleEquipmentBehavior()
     const [selectedEquipment, setSelectedEquipment] = useState<LastsEquipmentDatas>()
+    const [openPositionsLog, setOpenPositionsLog]= useState<boolean>(false)
+    const [openStatesLog, setOpenStatesLog]= useState<boolean>(false)
+
+    const formatDate = (isoDate: string): string => {
+        const date = new Date(isoDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
 
     return (
         <div id="equipments-nav">
@@ -98,56 +111,109 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors }) => 
                         </button>
                         <h2>Equipment Datas</h2>
                     </header>
-                    <section>
-                        <div className="info">
-                            <div 
-                                className="icon"
-                                style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
-                            >
-                                <Tractor />
+                    <div>
+                        <section id='infos'>
+                            <div className="info1">
+                                <div 
+                                    className="icon"
+                                    style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
+                                >
+                                    <Tractor />
+                                </div>
+                                <p>
+                                    <span>{selectedEquipment?.name}</span>
+                                    <b>Equipment</b>
+                                </p>
                             </div>
-                            <p>
-                                <span>{selectedEquipment?.name}</span>
-                                <b>Equipment</b>
-                            </p>
-                        </div>
-                        <div className="info">
-                            <div 
-                                className="icon"
-                                style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
-                            >
-                                <Box />
+                            <div className="info1">
+                                <div 
+                                    className="icon"
+                                    style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
+                                >
+                                    <Box />
+                                </div>
+                                <p>
+                                    <span>{selectedEquipment?.equipmentModelName}</span>
+                                    <b>Model</b>
+                                </p>
                             </div>
-                            <p>
-                                <span>{selectedEquipment?.equipmentModelName}</span>
-                                <b>Model</b>
-                            </p>
-                        </div>
-                        <div className="info">
-                            <div 
-                                className="icon"
-                                style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
-                            >
-                                <DollarSign />
+                            <div className="info1">
+                                <div 
+                                    className="icon"
+                                    style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
+                                >
+                                    <DollarSign />
+                                </div>
+                                <p>
+                                    <span style={{color: selectedEquipment?.totalEarnings < 0 ? 'red' : ''}}>{`${selectedEquipment?.totalEarnings}$`}</span>
+                                    <b>Earnings</b>
+                                </p>
                             </div>
-                            <p>
-                                <span style={{color: selectedEquipment?.totalEarnings < 0 ? 'red' : ''}}>{`${selectedEquipment?.totalEarnings}$`}</span>
-                                <b>Earnings</b>
-                            </p>
-                        </div>
-                        <div className="info">
-                            <div 
-                                className="icon"
-                                style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
-                            >
-                                <Percent />
+                            <div className="info1">
+                                <div 
+                                    className="icon"
+                                    style={{backgroundColor: `${selectedEquipment?.statesIdByTime[selectedEquipment?.statesIdByTime?.length-1]?.color}80`}}
+                                >
+                                    <Percent />
+                                </div>
+                                <p>
+                                    <span>{`${((selectedEquipment?.hoursOfProductivity/totalHours)*100)?.toFixed(2)}%`}</span>
+                                    <b>Productivity</b>
+                                </p>
                             </div>
-                            <p>
-                                <span>{`${((selectedEquipment?.hoursOfProductivity/totalHours)*100)?.toFixed(2)}%`}</span>
-                                <b>Productivity</b>
-                            </p>
-                        </div>
-                    </section>
+                        </section>
+                        <section id="datas">
+                            <div className="info2">
+                                <header>
+                                    <p>Positions Log</p>
+                                    <button onClick={() => setOpenPositionsLog(!openPositionsLog)}>
+                                        {openPositionsLog ? '—' : '+'}
+                                    </button>
+                                </header>
+                                {
+                                    openPositionsLog &&
+                                    <div>
+                                        {
+                                            selectedEquipment?.positions.map((position, index) => (
+                                                <div 
+                                                    key={index} 
+                                                    className='position'
+                                                >
+                                                    <p>{`Date: ${position?.date}`}</p>
+                                                    <p>{`Lat: ${position.lat}, Lon: ${position.lon}`}</p>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div className="info2">
+                                <header>
+                                    <p>States Log</p>
+                                    <button onClick={() => setOpenStatesLog(!openStatesLog)}>
+                                        {openStatesLog ? '—' : '+'}
+                                    </button>
+                                </header>
+                                {
+                                    openStatesLog &&
+                                    <div>
+                                        {
+                                            selectedEquipment?.statesIdByTime.map((state, index) => (
+                                                <div 
+                                                    key={index} 
+                                                    className='position'
+                                                >
+                                                    <p>{`Date: ${state?.date}`}</p>
+                                                    <p>{state?.name}</p>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </section>
+                        <footer>{`Last update: ${selectedEquipment?.lastUpdate}`}</footer>
+                    </div>
                 </article>
             }
         </div>
