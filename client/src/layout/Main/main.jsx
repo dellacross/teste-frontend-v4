@@ -119,9 +119,6 @@ const Main = () => {
                 </div>
             }
             <EquipmentsNav
-                handleVisibleEquipments={handleVisibleEquipments}
-                visibleEquipmentsIds={visibleEquipmentsIds}
-                toggleAllEquipments={toggleAllEquipments}
                 equipments={_equipments}
                 colors={colors}
             />
