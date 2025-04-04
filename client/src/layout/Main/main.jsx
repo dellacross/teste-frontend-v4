@@ -91,29 +91,28 @@ const Main = () => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         {
-                            equipments.map(equipament => (
-                                visibleEquipmentsIds.includes(equipament.equipmentId) &&
-                                <React.Fragment key={equipament.equipmentId}>
+                            _equipments.map(equipment => (
+                                visibleEquipmentsIds.includes(equipment.equipmentId) &&
+                                <React.Fragment key={equipment.equipmentId}>
                                     <Marker 
                                         position={[
-                                            equipament?.path?.slice(0, timeCount)[timeCount-1][0], 
-                                            equipament?.path?.slice(0, timeCount)[timeCount-1][1]
+                                            equipment?.positions[equipment?.positions?.length-1]?.lat,
+                                            equipment?.positions[equipment?.positions?.length-1]?.lon
                                         ]} 
-                                        icon={createCustomMarkerIcon(equipament?.lastState?.color)}
                                     >
                                         <Popup>
                                             <div>
-                                                <h3>{equipament.name}</h3>
-                                                <p>Status: {equipament?.lastState?.name}</p>
-                                                <p>Latitude: {equipament?.path?.slice(0, timeCount)[timeCount-1][0].toFixed(6)}</p>
-                                                <p>Longitude: {equipament?.path?.slice(0, timeCount)[timeCount-1][1].toFixed(6)}</p>
-                                                <p>Last update: {equipament?.position?.date}</p>
+                                                <h3>{equipment.name}</h3>
+                                                <p>Status:</p>
+                                                <p>Latitude: {equipment?.positions[equipment?.positions?.length-1]?.lat?.toFixed(6)}</p>
+                                                <p>Longitude: {equipment?.positions[equipment?.positions?.length-1]?.lon?.toFixed(6)}</p>
+                                                <p>Last update: {equipment?.lastUpdate}</p>
                                             </div>
                                         </Popup>
                                     </Marker>
                                     <Polyline
-                                        positions={equipament?.path?.slice(0, timeCount)}
-                                        color={equipament?.color}
+                                        positions={equipment?.positions?.slice(-5)}
+                                        color={equipment?.color}
                                     />
                                 </React.Fragment>
                             ))
