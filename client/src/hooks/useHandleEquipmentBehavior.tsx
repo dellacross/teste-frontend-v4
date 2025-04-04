@@ -18,7 +18,9 @@ type LastsEquipmentDatas = {
     positions: { date: string, lat: number, lon: number }[]
     statesIdByTime: { date: string, equipmentStateId: string, name: string, color: string }[]
     color: string
-    lastUpdate: string
+    lastUpdate: string,
+    earningByTime: { date: string, earning: number }[],
+    totalEarnings: number
 }
 
 const useHandleEquipmentBehavior = () => {
@@ -105,14 +107,34 @@ const useHandleEquipmentBehavior = () => {
                 ? [..._equipmentDataHistory.statesIdByTime]
                 : [];
 
+            let newEarning = _equipmentDataHistory?.earningByTime || []
+
             if (_equipmentStateAtTime) {
+                existUpdate = true
                 const equipmentNewState = equipmentState.find((eq) => eq.id === _equipmentStateAtTime.equipmentStateId);
+
+                const earningsByState = _equipmentModel?.hourlyEarnings?.find((e) => e.equipmentStateId === _equipmentStateAtTime.equipmentStateId);
+
+                if(earningsByState) {
+                    const earning = earningsByState.value;
+                    newEarning.push({
+                        date: _equipmentStateAtTime.date,
+                        earning: earning
+                    });
+                }
+
                 updatedStatesIdByTime.push({
                     date: _equipmentStateAtTime.date,
                     equipmentStateId: _equipmentStateAtTime.equipmentStateId,
                     name: equipmentNewState?.name || '',
                     color: equipmentNewState?.color || ''
                 });
+            } else {
+                const lastState = newEarning[newEarning.length - 1];
+                newEarning.push({
+                    date: date.toISOString(),
+                    earning: lastState ? lastState.earning : 0
+                })
             }
 
             // updated
@@ -127,7 +149,9 @@ const useHandleEquipmentBehavior = () => {
                 positions: updatedPositions,
                 statesIdByTime: updatedStatesIdByTime,
                 color: _equipmentDataHistory?.color || generateRandomColor(),
-                lastUpdate: newUpdatedDate
+                lastUpdate: newUpdatedDate,
+                earningByTime: newEarning,
+                totalEarnings: newEarning.reduce((acc, curr) => acc + curr.earning, 0)
             };
 
             consoleFlag && console.log('newEquipmentData', newEquipmentData)

@@ -25,6 +25,18 @@ const createCustomMarkerIcon = (color) => {
     });
 };
 
+const colors = [
+    "#FF5733", // Laranja vibrante
+    "#33FF57", // Verde limão
+    "#3357FF", // Azul forte
+    "#FF33A1", // Rosa choque
+    "#A133FF", // Roxo intenso
+    "#33FFF5", // Ciano
+    "#FFD433", // Amarelo ouro
+    "#8DFF33", // Verde neon
+    "#FF8C33"  // Laranja queimado
+];
+
 const Main = () => {
 
     const { _equipments } = useHandleEquipmentBehavior()
@@ -88,7 +100,7 @@ const Main = () => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         {
-                            _equipments.map(equipment => (
+                            _equipments.map((equipment, index) => (
                                 visibleEquipmentsIds.includes(equipment.equipmentId) &&
                                 <React.Fragment key={equipment.equipmentId}>
                                     <Marker
@@ -110,7 +122,7 @@ const Main = () => {
                                     </Marker>
                                     <Polyline
                                         positions={equipment?.positions?.slice(-5)}
-                                        color={equipment?.color}
+                                        color={colors[index]}
                                     />
                                 </React.Fragment>
                             ))
@@ -124,6 +136,7 @@ const Main = () => {
                 visibleEquipmentsIds={visibleEquipmentsIds}
                 toggleAllEquipments={toggleAllEquipments}
                 equipments={_equipments}
+                colors={colors}
             />
         </div>
     )

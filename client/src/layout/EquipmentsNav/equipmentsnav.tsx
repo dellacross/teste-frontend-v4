@@ -6,16 +6,20 @@ interface EquipmentsNavProps {
     visibleEquipmentsIds: string[];
     toggleAllEquipments: () => void;
     equipments: {
-        name: string;
-        equipmentId: string;
-        equipmentModelName: string;
-        position: { date: string; lat: number; lon: number };
-        color: string;
-        lastState: { name: string; color: string };
+        equipmentId: string
+        name: string
+        equipmentModelName: string
+        positions: { date: string, lat: number, lon: number }[]
+        statesIdByTime: { date: string, equipmentStateId: string, name: string, color: string }[]
+        color: string
+        lastUpdate: string,
+        earningByTime: { date: string, earning: number }[],
+        totalEarnings: number
     }[];
+    colors: string[]
 };
 
-const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, visibleEquipmentsIds, toggleAllEquipments, equipments }) => {
+const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, visibleEquipmentsIds, toggleAllEquipments, equipments, colors }) => {
 
     return (
         <div id="equipments-nav">
@@ -24,11 +28,11 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, 
             </header>
             <article>
                 {
-                    equipments?.map(equipment => (
+                    equipments?.map((equipment, index) => (
                         <div
                             key={equipment.equipmentId}
                             className='equipment'
-                            style={{ borderLeft: `5px solid ${equipment?.color}` }}
+                            style={{ borderLeft: `5px solid ${colors[index]}` }}
                         >
                             <div className='equipment-name'>
                                 <p>{`${equipment.name} - ${equipment?.equipmentModelName}`}</p>
@@ -36,11 +40,11 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, 
                             </div>
                             <div className='equipment-infos'>
                                 <section>
-                                    <p>{equipment?.lastState?.name}</p>
+                                    <p>{equipment?.statesIdByTime[equipment?.statesIdByTime?.length-1]?.name}</p>
                                     <b>State</b>
                                 </section>
                                 <section>
-                                    <p>{equipment?.lastState?.name}</p>
+                                    <p>{equipment?.statesIdByTime[equipment?.statesIdByTime?.length-1]?.name}</p>
                                     <b>State</b>
                                 </section>
                             </div>
