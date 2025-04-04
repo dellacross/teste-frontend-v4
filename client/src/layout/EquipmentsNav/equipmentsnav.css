@@ -45,6 +45,10 @@
     gap: 5px;
 }
 
+#equipments-nav > article > div.equipment.hidden {
+    opacity: 0.5;
+}
+
 #equipments-nav > article > div.equipment > div.equipment-name {
     width: 100%;
 }

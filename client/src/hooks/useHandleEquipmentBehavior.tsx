@@ -76,7 +76,6 @@ const useHandleEquipmentBehavior = () => {
             const _equipmentPositionByTime = equipamentPositionHistory.find((eq) => eq.equipmentId === id);
             const _equipmentLocationAtTime = _equipmentPositionByTime?.positions.find((pos) => pos.date === date.toISOString());
 
-            // Atualizar positions de forma imutável
             const updatedPositions = _equipmentDataHistory?.positions
                 ? [..._equipmentDataHistory.positions]
                 : [];
@@ -87,9 +86,8 @@ const useHandleEquipmentBehavior = () => {
             }
             // states
             const _equipmentStateHistory = equipmentStateHistory.find((eq) => eq.equipmentId === id);
-            const _equipmentStateAtTime = _equipmentStateHistory?.states.find((state) => state.date === date.toISOString());
+            const _equipmentStateAtDate = _equipmentStateHistory?.states.find((state) => state.date === date.toISOString());
         
-            // Atualizar statesIdByTime de forma imutável
             const updatedStatesIdByTime = _equipmentDataHistory?.statesIdByTime
                 ? [..._equipmentDataHistory.statesIdByTime]
                 : [];
@@ -97,11 +95,11 @@ const useHandleEquipmentBehavior = () => {
             let newEarning = _equipmentDataHistory?.earningByTime || []
             let newHoursOfProductivity = _equipmentDataHistory?.hoursOfProductivity || 0
 
-            if (_equipmentStateAtTime) {
+            if (_equipmentStateAtDate) {
                 existUpdate = true
-                const equipmentNewState = equipmentState.find((eq) => eq.id === _equipmentStateAtTime.equipmentStateId);
+                const equipmentNewState = equipmentState.find((eq) => eq.id === _equipmentStateAtDate.equipmentStateId);
 
-                const earningsByState = _equipmentModel?.hourlyEarnings?.find((e) => e.equipmentStateId === _equipmentStateAtTime.equipmentStateId);
+                const earningsByState = _equipmentModel?.hourlyEarnings?.find((e) => e.equipmentStateId === _equipmentStateAtDate.equipmentStateId);
 
                 if(earningsByState) {
                     const earning = earningsByState.value;
@@ -109,14 +107,14 @@ const useHandleEquipmentBehavior = () => {
                     if(earning > 0) newHoursOfProductivity += 1;
 
                     newEarning.push({
-                        date: _equipmentStateAtTime.date,
+                        date: _equipmentStateAtDate.date,
                         earning: earning
                     });
                 }
 
                 updatedStatesIdByTime.push({
-                    date: _equipmentStateAtTime.date,
-                    equipmentStateId: _equipmentStateAtTime.equipmentStateId,
+                    date: _equipmentStateAtDate.date,
+                    equipmentStateId: _equipmentStateAtDate.equipmentStateId,
                     name: equipmentNewState?.name || '',
                     color: equipmentNewState?.color || ''
                 });
@@ -127,7 +125,7 @@ const useHandleEquipmentBehavior = () => {
                     earning: lastState ? lastState.earning : 0
                 })
             }
-
+            
             // updated
             let newUpdatedDate = existUpdate 
                 ? date.toISOString() 

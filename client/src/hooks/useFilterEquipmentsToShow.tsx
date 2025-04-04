@@ -4,53 +4,39 @@ import equipmentModel from '../data/equipmentModel.json'
 
 const useFilterEquipmentsToShow = () => {
 
-    const [modelFilter, setModelFilter] = useState<{ id: string, display: boolean, name: string }[]>([])
-    const [stateFilter, setStateFilter] = useState<{ id: string, display: boolean, name: string }[]>([])
+    const [filter, setFilter] = useState<{ models: string[], states: string[] }>({ models: [], states: [] })
 
     useEffect(() => {
+        const equipmentModelIds = equipmentModel.map((model) => model.id)
 
-        const equipmentModelIds = equipmentModel.map((model) => ({
-            id: model.id,
-            name: model.name,
-            display: true
-        }))
+        const equipmentStateIds = equipmentState.map((state) => (state.id))
 
-        const equipmentStateIds = equipmentState.map((state) => ({
-            id: state.id,
-            name: state.name,
-            display: true
-        }))
-
-        setModelFilter(equipmentModelIds)
-        setStateFilter(equipmentStateIds)
-
-    }, [equipmentModel, equipmentState])
+        setFilter({
+            models: equipmentModelIds,
+            states: equipmentStateIds
+        })
+    }, [])
 
     const handleModelFilter = (id: string) => {
-        const newModelFilter = modelFilter.map((model) => {
-            if (model.id === id) {
-                return { ...model, display: !model.display }
-            }
-            return model
-        })
-
-        setModelFilter(newModelFilter)
-    }
+        setFilter((prevFilter) => {
+            const updatedModels = prevFilter.models.includes(id)
+                ? prevFilter.models.filter((model) => model !== id)
+                : [...prevFilter.models, id];
+            return { ...prevFilter, models: updatedModels };
+        });
+    };
 
     const handleStateFilter = (id: string) => {
-        const newStateFilter = stateFilter.map((state) => {
-            if (state.id === id) {
-                return { ...state, display: !state.display }
-            }
-            return state
-        })
-
-        setStateFilter(newStateFilter)
-    }
+        setFilter((prevFilter) => {
+            const updatedStates = prevFilter.states.includes(id)
+                ? prevFilter.states.filter((state) => state !== id)
+                : [...prevFilter.states, id];
+            return { ...prevFilter, states: updatedStates };
+        });
+    };
 
     return {
-        modelFilter,
-        stateFilter,
+        filter,
         handleModelFilter,
         handleStateFilter
     }

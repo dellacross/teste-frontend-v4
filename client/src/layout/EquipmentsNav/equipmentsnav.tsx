@@ -3,25 +3,6 @@ import './equipmentsnav.css'
 import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
 import { ArrowLeft, Box, DollarSign, Percent, Tractor } from 'lucide-react';
 
-interface EquipmentsNavProps {
-    handleVisibleEquipments: (id: string) => void;
-    visibleEquipmentsIds: string[];
-    toggleAllEquipments: () => void;
-    equipments: {
-        equipmentId: string
-        name: string
-        equipmentModelName: string
-        positions: { date: string, lat: number, lon: number }[]
-        statesIdByTime: { date: string, equipmentStateId: string, name: string, color: string }[]
-        color: string
-        lastUpdate: string,
-        earningByTime: { date: string, earning: number }[],
-        totalEarnings: number,
-        hoursOfProductivity: number
-    }[];
-    colors: string[]
-};
-
 type LastsEquipmentDatas = {
     equipmentId: string
     name: string
@@ -36,22 +17,24 @@ type LastsEquipmentDatas = {
     hoursOfProductivity: number
 }
 
-const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors }) => {
+interface EquipmentsNavProps {
+    handleVisibleEquipments: (id: string) => void;
+    visibleEquipmentsIds: string[];
+    toggleAllEquipments: () => void;
+    equipments: LastsEquipmentDatas[];
+    colors: string[]
+    filter: { models: string[]; states: string[] } | null
+};
+
+const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors, filter }) => {
 
     const { totalHours } = useHandleEquipmentBehavior()
     const [selectedEquipment, setSelectedEquipment] = useState<LastsEquipmentDatas>()
     const [openPositionsLog, setOpenPositionsLog]= useState<boolean>(false)
     const [openStatesLog, setOpenStatesLog]= useState<boolean>(false)
 
-    const formatDate = (isoDate: string): string => {
-        const date = new Date(isoDate);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-    
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    const handleFilterDisplayEquipment = (modelId: string, stateId: string) => {
+        return filter?.states.includes(stateId) && filter?.models.includes(modelId)
     }
 
     return (
@@ -69,7 +52,7 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors }) => 
                         equipments?.map((equipment, index) => (
                             <div
                                 key={equipment.equipmentId}
-                                className='equipment'
+                                className={`equipment ${!handleFilterDisplayEquipment(equipment.equipmentModelId, equipment.statesIdByTime[equipment.statesIdByTime?.length-1]?.equipmentStateId) ? 'hidden' : ''}`}
                                 style={{ borderLeft: `5px solid ${colors[index]}` }}
                             >
                                 <div className='equipment-name'>

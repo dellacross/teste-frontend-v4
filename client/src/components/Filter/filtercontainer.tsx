@@ -1,77 +1,62 @@
 import './filtercontainer.css'
-import useFilterEquipmentsToShow from '../../hooks/useFilterEquipmentsToShow'
 import { Eye, EyeClosed } from 'lucide-react'
+import equipmentModel from '../../data/equipmentModel.json'
+import equipmentState from '../../data/equipmentState.json'
 
-const FilterContainer = () => {
+interface FilterContainerProps {
+    handleStateFilter: (stateId: string) => void;
+    handleModelFilter: (modelId: string) => void;
+    filter: { models: string[]; states: string[] } | null;
+}
 
-    const {
-        modelFilter,
-        stateFilter,
-        handleModelFilter,
-        handleStateFilter
-    } = useFilterEquipmentsToShow()
+const FilterContainer: React.FC<FilterContainerProps> = ({ handleStateFilter, handleModelFilter, filter }) => {
 
     return (
         <div id="filter-container">
             <section>
-                <h2>Model</h2>
-                <div id="model-filter">
+                <h2>By model</h2>
+                <div className="filter">
                     {
-                        modelFilter.map((model) => (
-                            <div 
+                        equipmentModel.map((model) => (
+                            <button 
                                 key={model.id} 
                                 className="filter-option"
+                                onClick={() => handleModelFilter(model.id)}
                             >
-
-                                <input
-                                    type="checkbox"
-                                    id={model.id}
-                                    checked={model.display}
-                                    onChange={() => handleModelFilter(model.id)}
-                                />
-                                <label htmlFor={model.id}>
-                                    <span onClick={() => handleModelFilter(model.id)}>
-                                    {
-                                        model?.display ?
-                                        <Eye />
-                                        :
-                                        <EyeClosed />
-                                    }
-                                    </span>
-                                    {model.name}
-                                </label>
-                            </div>
+                                <span>
+                                {
+                                    filter?.models?.includes(model.id) ?
+                                    <Eye />
+                                    :
+                                    <EyeClosed />
+                                }
+                                </span>
+                                {model.name}
+                            </button>
                         ))
                     }
                 </div>
             </section>
             <section>
-                <h2>State</h2>
-                <div id="state-filter">
+                <h2>By state</h2>
+                <div className="filter">
                     {
-                        stateFilter.map((state) => (
-                            <div 
+                        equipmentState.map((state) => (
+                            <button 
                                 key={state.id} 
                                 className="filter-option"
+                                onClick={() => handleStateFilter(state.id)}
                             >
-                                <input
-                                    type="checkbox"
-                                    id={state.id}
-                                    checked={state.display}
-                                    onChange={() => handleStateFilter(state.id)}
-                                />
-                                <label htmlFor={state.id}>
-                                    <span>
-                                    {
-                                        state?.display ?
-                                        <Eye />
-                                        :
-                                        <EyeClosed />
-                                    }
-                                    </span>
-                                    {state.name}
-                                </label>
-                            </div>
+                                <span>
+                                {
+                                    filter?.states?.includes(state.id) ?
+                                    <Eye />
+                                    :
+                                    <EyeClosed />
+                                }
+                                </span>
+                                {state.name}
+                            </button>
                         ))
                     }
                 </div>

@@ -5,6 +5,10 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import EquipmentsNav from '../EquipmentsNav/equipmentsnav';
 import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
+import { Filter } from 'lucide-react';
+import FilterContainer from '../../components/Filter/filtercontainer';
+import equipmentModel from '../../data/equipmentModel.json'
+import equipmentState from '../../data/equipmentState.json'
 
 // Fix for default marker icons in React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -30,11 +34,11 @@ const colors = [
     "#33FF57", // Verde limão
     "#3357FF", // Azul forte
     "#FF33A1", // Rosa choque
-    "#A133FF", // Roxo intenso
     "#33FFF5", // Ciano
     "#FFD433", // Amarelo ouro
     "#8DFF33", // Verde neon
-    "#FF8C33"  // Laranja queimado
+    "#FF8C33",  // Laranja queimado
+    "#A133FF", // Roxo intenso
 ];
 
 const Main = () => {
@@ -44,7 +48,43 @@ const Main = () => {
     const [center, setCenter] = useState([0, 0]);
     const [zoom] = useState(11);
     const [loading, setLoading] = useState(true)
-    const [visibleEquipmentsIds, setVisibleEquipmentsIds] = useState([])
+    const [openFilter, setOpenFilter] = useState(false)
+
+    const [filter, setFilter] = useState({ models: [], states: [] })
+
+    useEffect(() => {
+        const equipmentModelIds = equipmentModel.map((model) => model.id)
+
+        const equipmentStateIds = equipmentState.map((state) => (state.id))
+
+        setFilter({
+            models: equipmentModelIds,
+            states: equipmentStateIds
+        })
+    }, [])
+
+    const handleModelFilter = (id) => {
+        setFilter((prevFilter) => {
+            const updatedModels = prevFilter.models.includes(id)
+                ? prevFilter.models.filter((model) => model !== id)
+                : [...prevFilter.models, id];
+            return { ...prevFilter, models: updatedModels };
+        });
+    };
+
+    const handleStateFilter = (id) => {
+        setFilter((prevFilter) => {
+            const updatedStates = prevFilter.states.includes(id)
+                ? prevFilter.states.filter((state) => state !== id)
+                : [...prevFilter.states, id];
+            return { ...prevFilter, states: updatedStates };
+        });
+    };
+
+    const handleFilterDisplayEquipment = (equipment) => {
+        const state = equipment?.statesIdByTime[equipment?.statesIdByTime?.length - 1]?.equipmentStateId
+        return filter?.states.includes(state) && filter?.models.includes(equipment?.equipmentModelId)
+    }
 
     useEffect(() => {
         if (_equipments?.length === 0) return
@@ -55,23 +95,8 @@ const Main = () => {
         setCenter([lat, lon]);
 
         setLoading(false)
-
-        setVisibleEquipmentsIds(_equipments.map(equipament => equipament.equipmentId))
     }, [_equipments])
-
-    const handleVisibleEquipments = (equipamentId) => {
-        setVisibleEquipmentsIds(prev =>
-            prev.includes(equipamentId)
-                ? prev.filter(id => id !== equipamentId)
-                : [...prev, equipamentId]
-        );
-    }
-
-    const toggleAllEquipments = () => {
-        if (visibleEquipmentsIds.length > 0) setVisibleEquipmentsIds([])
-        else setVisibleEquipmentsIds(_equipments.map(equipament => equipament.equipmentId))
-    }
-
+    
     return (
         <div id="map-wrapper">
             {
@@ -88,7 +113,7 @@ const Main = () => {
                         />
                         {
                             _equipments.map((equipment, index) => (
-                                visibleEquipmentsIds.includes(equipment.equipmentId) &&
+                                handleFilterDisplayEquipment(equipment) &&
                                 <React.Fragment key={equipment.equipmentId}>
                                     <Marker
                                         position={[
@@ -121,7 +146,22 @@ const Main = () => {
             <EquipmentsNav
                 equipments={_equipments}
                 colors={colors}
+                filter={filter}
             />
+            <button 
+                id="filter-btn"
+                onClick={() => setOpenFilter(!openFilter)}
+            >
+                <Filter />
+            </button>
+            { 
+                openFilter && 
+                <FilterContainer 
+                    handleStateFilter={handleStateFilter}
+                    handleModelFilter={handleModelFilter}
+                    filter={filter}
+                /> 
+            }
         </div>
     )
 }

@@ -20,34 +20,20 @@
     justify-content: center;
 }
 
-#filter-container div#state-filter,
-#filter-container div#model-filter {
+#filter-container div.filter {
     padding: 0 10px;
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-#filter-container div.filter-option {
-    width: 100%;
+#filter-container div.filter button {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: 1.1rem;
-    cursor: pointer;
-}
-
-#filter-container div.filter-option * {
-    cursor: pointer;
-}
-
-#filter-container div input {
-    display: none;
-}
-
-#filter-container label {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    color: #fff;
+    padding: 0;
     gap: 10px;
+    background-color: transparent;
+    border: none;
 }

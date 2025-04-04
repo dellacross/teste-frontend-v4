@@ -7,9 +7,3 @@
     background-color: var(--primary-color);
     justify-content: space-between;
 }
-
-#nav-bar button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
