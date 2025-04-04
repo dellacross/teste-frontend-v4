@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import './main.css'
+import './map.css'
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import EquipmentsNav from '../EquipmentsNav/equipmentsnav';
+import EquipmentsNav from '../../components/EquipmentsNav/equipmentsnav';
 import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
 import { Filter } from 'lucide-react';
 import FilterContainer from '../../components/Filter/filtercontainer';
@@ -41,7 +41,7 @@ const colors = [
     "#A133FF", // Roxo intenso
 ];
 
-const Main = () => {
+const Map = () => {
 
     const { _equipments } = useHandleEquipmentBehavior()
 
@@ -166,4 +166,4 @@ const Main = () => {
     )
 }
 
-export default Main
+export default Map
