@@ -3,7 +3,6 @@ import './main.css'
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import useHandleEquipamentMoviment from '../../hooks/useHandleEquipamentMoviment';
 import EquipmentsNav from '../EquipmentsNav/equipmentsnav';
 import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
 
@@ -16,19 +15,18 @@ L.Icon.Default.mergeOptions({
 });
 
 const createCustomMarkerIcon = (color) => {
-  return L.divIcon({
-    html: `<svg viewBox="0 0 24 24" width="24" height="24" stroke="${color}" fill="${color}" stroke-width="2">
+    return L.divIcon({
+        html: `<svg viewBox="0 0 24 24" width="24" height="24" stroke="${color}" fill="${color}" stroke-width="2">
              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
            </svg>`,
-    className: '',
-    iconSize: [24, 24],
-    iconAnchor: [12, 24]
-  });
+        className: '',
+        iconSize: [24, 24],
+        iconAnchor: [12, 24]
+    });
 };
 
 const Main = () => {
 
-    const { equipments } = useHandleEquipamentMoviment()
     const { _equipments } = useHandleEquipmentBehavior()
 
     //useEffect(() => { console.log('eq', _equipments) }, [_equipments])
@@ -40,28 +38,27 @@ const Main = () => {
     const [visibleEquipmentsIds, setVisibleEquipmentsIds] = useState([])
 
     useEffect(() => {
-        if (equipments?.length === 0) return
+        if (_equipments?.length === 0) return
 
-        const firstEquipment = equipments[0];
-        const lat = firstEquipment?.position?.lat;
-        const lon = firstEquipment?.position?.lon;
+        const firstEquipment = _equipments[0];
+        const lat = firstEquipment?.positions[0]?.lat;
+        const lon = firstEquipment?.positions[0]?.lon;
         setCenter([lat, lon]);
 
         setLoading(false)
 
-        setVisibleEquipmentsIds(equipments.map(equipament => equipament.equipmentId))
-    }, [equipments])
-
+        setVisibleEquipmentsIds(_equipments.map(equipament => equipament.equipmentId))
+    }, [_equipments])
 
     useEffect(() => {
-        if(!equipments) return
+        if (!_equipments) return
 
         const interval = setInterval(() => {
             setTimeCount(prev => prev + 1)
         }, 2000);
-      
+
         return () => clearInterval(interval);
-    }, [equipments])
+    }, [_equipments])
 
     const handleVisibleEquipments = (equipamentId) => {
         setVisibleEquipmentsIds(prev =>
@@ -72,8 +69,8 @@ const Main = () => {
     }
 
     const toggleAllEquipments = () => {
-        if(visibleEquipmentsIds.length > 0) setVisibleEquipmentsIds([])
-        else setVisibleEquipmentsIds(equipments.map(equipament => equipament.equipmentId))
+        if (visibleEquipmentsIds.length > 0) setVisibleEquipmentsIds([])
+        else setVisibleEquipmentsIds(_equipments.map(equipament => equipament.equipmentId))
     }
 
     return (
@@ -81,9 +78,9 @@ const Main = () => {
             {
                 !loading &&
                 <div style={{ height: '100vh', width: '100%' }}>
-                    <MapContainer 
-                        center={center} 
-                        zoom={zoom} 
+                    <MapContainer
+                        center={center}
+                        zoom={zoom}
                         style={{ height: '100%', width: '100%' }}
                     >
                         <TileLayer
@@ -94,18 +91,19 @@ const Main = () => {
                             _equipments.map(equipment => (
                                 visibleEquipmentsIds.includes(equipment.equipmentId) &&
                                 <React.Fragment key={equipment.equipmentId}>
-                                    <Marker 
+                                    <Marker
                                         position={[
-                                            equipment?.positions[equipment?.positions?.length-1]?.lat,
-                                            equipment?.positions[equipment?.positions?.length-1]?.lon
-                                        ]} 
+                                            equipment?.positions[equipment?.positions?.length - 1]?.lat,
+                                            equipment?.positions[equipment?.positions?.length - 1]?.lon
+                                        ]}
+                                        icon={createCustomMarkerIcon(equipment?.statesIdByTime[equipment?.statesIdByTime?.length-1]?.color)}
                                     >
                                         <Popup>
                                             <div>
                                                 <h3>{equipment.name}</h3>
-                                                <p>Status:</p>
-                                                <p>Latitude: {equipment?.positions[equipment?.positions?.length-1]?.lat?.toFixed(6)}</p>
-                                                <p>Longitude: {equipment?.positions[equipment?.positions?.length-1]?.lon?.toFixed(6)}</p>
+                                                <p>Status: {equipment?.statesIdByTime[equipment?.statesIdByTime?.length-1]?.name}</p>
+                                                <p>Latitude: {equipment?.positions[equipment?.positions?.length - 1]?.lat?.toFixed(6)}</p>
+                                                <p>Longitude: {equipment?.positions[equipment?.positions?.length - 1]?.lon?.toFixed(6)}</p>
                                                 <p>Last update: {equipment?.lastUpdate}</p>
                                             </div>
                                         </Popup>
@@ -121,11 +119,11 @@ const Main = () => {
                     </MapContainer>
                 </div>
             }
-            <EquipmentsNav 
-                handleVisibleEquipments={handleVisibleEquipments} 
+            <EquipmentsNav
+                handleVisibleEquipments={handleVisibleEquipments}
                 visibleEquipmentsIds={visibleEquipmentsIds}
                 toggleAllEquipments={toggleAllEquipments}
-                equipments={equipments}
+                equipments={_equipments}
             />
         </div>
     )

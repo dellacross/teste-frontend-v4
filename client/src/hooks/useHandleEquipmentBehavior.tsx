@@ -16,7 +16,7 @@ type LastsEquipmentDatas = {
     name: string
     equipmentModelName: string
     positions: { date: string, lat: number, lon: number }[]
-    statesIdByTime: { date: string, equipmentStateId: string }[]
+    statesIdByTime: { date: string, equipmentStateId: string, name: string, color: string }[]
     color: string
     lastUpdate: string
 }
@@ -105,7 +105,15 @@ const useHandleEquipmentBehavior = () => {
                 ? [..._equipmentDataHistory.statesIdByTime]
                 : [];
 
-            if (_equipmentStateAtTime) updatedStatesIdByTime.push(_equipmentStateAtTime);
+            if (_equipmentStateAtTime) {
+                const equipmentNewState = equipmentState.find((eq) => eq.id === _equipmentStateAtTime.equipmentStateId);
+                updatedStatesIdByTime.push({
+                    date: _equipmentStateAtTime.date,
+                    equipmentStateId: _equipmentStateAtTime.equipmentStateId,
+                    name: equipmentNewState?.name || '',
+                    color: equipmentNewState?.color || ''
+                });
+            }
 
             // updated
             let newUpdatedDate = existUpdate 
