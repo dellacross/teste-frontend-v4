@@ -20,13 +20,16 @@ type LastsEquipmentDatas = {
     color: string
     lastUpdate: string,
     earningByTime: { date: string, earning: number }[],
-    totalEarnings: number
+    totalEarnings: number,
+    equipmentModelId: string,
+    hoursOfProductivity?: number
 }
 
 const useHandleEquipmentBehavior = () => {
 
     const [_equipments, setEquipments] = useState<LastsEquipmentDatas[]>([])
     const [date, setDate] = useState<Date>(new Date("2021-02-01T03:00:00.000Z"));
+    const [totalHours, setTotalHours] = useState<number>(1);
     const isInitialRender = useRef(true);
 
     const generateRandomColor = (): string => {
@@ -45,7 +48,8 @@ const useHandleEquipmentBehavior = () => {
                 newDate.setHours(newDate.getHours() + 1);
                 return new Date(newDate.toISOString());
             });
-        }, 2000);
+            setTotalHours((prevHours) => prevHours + 1);
+        }, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -56,21 +60,14 @@ const useHandleEquipmentBehavior = () => {
             isInitialRender.current = false;
             return;
         }
-
-        console.log('date', date.toISOString())        
+     
         let hash: LastsEquipmentDatas[] = _equipments || []
 
-        console.log('hash', hash)
-        let consoleFlag = false
         let existUpdate = false
 
         equipment?.map(({ id, name, equipmentModelId }: Equipment) => {
 
-            if(id === '1c7e9615-cc1c-4d72-8496-190fe5791c8b') consoleFlag = true
-
-            consoleFlag && console.log('name', name)
             const _equipmentDataHistory = hash?.find((eq) => eq.equipmentId === id);
-            consoleFlag && console.log('edh', _equipmentDataHistory)
         
             // model
             const _equipmentModel = equipamentModel.find((eq) => eq.id === equipmentModelId);
@@ -79,28 +76,18 @@ const useHandleEquipmentBehavior = () => {
             const _equipmentPositionByTime = equipamentPositionHistory.find((eq) => eq.equipmentId === id);
             const _equipmentLocationAtTime = _equipmentPositionByTime?.positions.find((pos) => pos.date === date.toISOString());
 
-            if(_equipmentLocationAtTime) {
-                existUpdate = true
-                consoleFlag && console.log('mudanca posicao')
-            }
-            else consoleFlag && console.log('sem mudanca posicao')
-
             // Atualizar positions de forma imutável
             const updatedPositions = _equipmentDataHistory?.positions
                 ? [..._equipmentDataHistory.positions]
                 : [];
 
-            if (_equipmentLocationAtTime) updatedPositions.push(_equipmentLocationAtTime);
-
+            if (_equipmentLocationAtTime) {
+                existUpdate = true
+                updatedPositions.push(_equipmentLocationAtTime);
+            }
             // states
             const _equipmentStateHistory = equipmentStateHistory.find((eq) => eq.equipmentId === id);
             const _equipmentStateAtTime = _equipmentStateHistory?.states.find((state) => state.date === date.toISOString());
-
-            if(_equipmentStateAtTime) {
-                consoleFlag && console.log('mudanca estado')
-                existUpdate = true
-            }
-            else consoleFlag && console.log('sem mudanca estado')
         
             // Atualizar statesIdByTime de forma imutável
             const updatedStatesIdByTime = _equipmentDataHistory?.statesIdByTime
@@ -108,6 +95,7 @@ const useHandleEquipmentBehavior = () => {
                 : [];
 
             let newEarning = _equipmentDataHistory?.earningByTime || []
+            let newHoursOfProductivity = _equipmentDataHistory?.hoursOfProductivity || 0
 
             if (_equipmentStateAtTime) {
                 existUpdate = true
@@ -117,6 +105,9 @@ const useHandleEquipmentBehavior = () => {
 
                 if(earningsByState) {
                     const earning = earningsByState.value;
+
+                    if(earning > 0) newHoursOfProductivity += 1;
+
                     newEarning.push({
                         date: _equipmentStateAtTime.date,
                         earning: earning
@@ -151,23 +142,20 @@ const useHandleEquipmentBehavior = () => {
                 color: _equipmentDataHistory?.color || generateRandomColor(),
                 lastUpdate: newUpdatedDate,
                 earningByTime: newEarning,
-                totalEarnings: newEarning.reduce((acc, curr) => acc + curr.earning, 0)
+                totalEarnings: newEarning.reduce((acc, curr) => acc + curr.earning, 0),
+                equipmentModelId: _equipmentModel?.id || '',
+                hoursOfProductivity: newHoursOfProductivity
             };
-
-            consoleFlag && console.log('newEquipmentData', newEquipmentData)
         
             if (_equipmentDataHistory) {
                 const updatedEquipments = hash?.map((equipment) =>
                     equipment.equipmentId === id ? newEquipmentData : equipment
                 );
                 hash = [...updatedEquipments];
-                consoleFlag && console.log('achou e mudou', updatedEquipments)
             } else {
                 hash.push(newEquipmentData);
-                consoleFlag && console.log('nao achou')
             }
-            consoleFlag && console.log('------------------------------------------------------------')
-            consoleFlag = false
+
             existUpdate = false
         });
         
@@ -175,7 +163,8 @@ const useHandleEquipmentBehavior = () => {
     }, [date])
 
     return {
-        _equipments
+        _equipments,
+        totalHours
     }
 }
 

@@ -41,11 +41,8 @@ const Main = () => {
 
     const { _equipments } = useHandleEquipmentBehavior()
 
-    //useEffect(() => { console.log('eq', _equipments) }, [_equipments])
-
     const [center, setCenter] = useState([0, 0]);
     const [zoom] = useState(11);
-    const [timeCount, setTimeCount] = useState(1);
     const [loading, setLoading] = useState(true)
     const [visibleEquipmentsIds, setVisibleEquipmentsIds] = useState([])
 
@@ -60,16 +57,6 @@ const Main = () => {
         setLoading(false)
 
         setVisibleEquipmentsIds(_equipments.map(equipament => equipament.equipmentId))
-    }, [_equipments])
-
-    useEffect(() => {
-        if (!_equipments) return
-
-        const interval = setInterval(() => {
-            setTimeCount(prev => prev + 1)
-        }, 2000);
-
-        return () => clearInterval(interval);
     }, [_equipments])
 
     const handleVisibleEquipments = (equipamentId) => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import './equipmentsnav.css'
+import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
 
 interface EquipmentsNavProps {
     handleVisibleEquipments: (id: string) => void;
@@ -14,12 +15,15 @@ interface EquipmentsNavProps {
         color: string
         lastUpdate: string,
         earningByTime: { date: string, earning: number }[],
-        totalEarnings: number
+        totalEarnings: number,
+        hoursOfProductivity: number
     }[];
     colors: string[]
 };
 
 const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, visibleEquipmentsIds, toggleAllEquipments, equipments, colors }) => {
+
+    const { totalHours } = useHandleEquipmentBehavior()
 
     return (
         <div id="equipments-nav">
@@ -44,20 +48,18 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ handleVisibleEquipments, 
                                     <b>State</b>
                                 </section>
                                 <section>
-                                    <p>{equipment?.statesIdByTime[equipment?.statesIdByTime?.length-1]?.name}</p>
-                                    <b>State</b>
+                                    <p>{`${equipment?.totalEarnings}$`}</p>
+                                    <b>Earnings</b>
+                                </section>
+                                <section>
+                                    <p>{`${((equipment?.hoursOfProductivity/totalHours)*100)?.toFixed(2)}%`}</p>
+                                    <b>Productivity</b>
                                 </section>
                             </div>
                         </div>
                     ))
                 }
             </article>
-            <button
-                onClick={() => toggleAllEquipments()}
-                className='toggle-all-button'
-            >
-                {`${visibleEquipmentsIds.length === 0 ? 'Show' : 'Hide'} all equipments`}
-            </button>
         </div>
     )
 }
