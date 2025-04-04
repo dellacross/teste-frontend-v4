@@ -19,4 +19,6 @@ button {
   --primary-color: #141414;
   --secondary-color: #1D1D1D;
   --tertiary-color: #3B3B3B;
+
+  --shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }

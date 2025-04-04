@@ -20,12 +20,12 @@ L.Icon.Default.mergeOptions({
 
 const createCustomMarkerIcon = (color) => {
     return L.divIcon({
-        html: `<svg viewBox="0 0 24 24" width="24" height="24" stroke="${color}" fill="${color}" stroke-width="2">
+        html: `<svg viewBox="0 0 24 24" width="36" height="36" stroke="${color}" fill="${color}" stroke-width="2">
              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
            </svg>`,
         className: '',
-        iconSize: [24, 24],
-        iconAnchor: [12, 24]
+        iconSize: [36, 36],
+        iconAnchor: [18, 36]
     });
 };
 
@@ -125,10 +125,11 @@ const Map = () => {
                                         <Popup>
                                             <div>
                                                 <h3>{equipment.name}</h3>
-                                                <p>Status: {equipment?.statesIdByTime[equipment?.statesIdByTime?.length-1]?.name}</p>
-                                                <p>Latitude: {equipment?.positions[equipment?.positions?.length - 1]?.lat?.toFixed(6)}</p>
-                                                <p>Longitude: {equipment?.positions[equipment?.positions?.length - 1]?.lon?.toFixed(6)}</p>
-                                                <p>Last update: {equipment?.lastUpdate}</p>
+                                                <p>{`Model: ${equipment?.equipmentModelName}`}</p>
+                                                <p>{`Status: ${equipment?.statesIdByTime[equipment?.statesIdByTime?.length-1]?.name}`}</p>
+                                                <p>{`Latitude: ${equipment?.positions[equipment?.positions?.length - 1]?.lat?.toFixed(6)}`}</p>
+                                                <p>{`Longitude: ${equipment?.positions[equipment?.positions?.length - 1]?.lon?.toFixed(6)}`}</p>
+                                                <p>{`Last update: ${equipment?.lastUpdate}`}</p>
                                             </div>
                                         </Popup>
                                     </Marker>

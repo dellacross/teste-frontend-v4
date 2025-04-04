@@ -18,5 +18,10 @@
     align-items: center;
     padding: 15px;
     border: none;
+    color: #00DF00;
+}
+
+#map-wrapper button#filter-btn:hover {
+    background-color: #00DF0080;
     color: #fff;
 }
