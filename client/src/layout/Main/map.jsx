@@ -5,7 +5,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import EquipmentsNav from '../../components/EquipmentsNav/equipmentsnav';
 import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
-import { Filter } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 import FilterContainer from '../../components/Filter/filtercontainer';
 import equipmentModel from '../../data/equipmentModel.json'
 import equipmentState from '../../data/equipmentState.json'
@@ -153,7 +153,7 @@ const Map = () => {
                 id="filter-btn"
                 onClick={() => setOpenFilter(!openFilter)}
             >
-                <Filter />
+                { openFilter ? <X /> : <Filter /> }
             </button>
             { 
                 openFilter && 

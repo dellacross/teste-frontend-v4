@@ -17,12 +17,20 @@
 #equipments-nav > header {
     width: 100%;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#equipments-nav > header > h1 {
-    font-size: 20px;
+#equipments-nav > header > h1,
+#equipments-nav > header > p {
+    font-size: 1.4rem;
     color: white;
     margin: 0;
+}
+
+#equipments-nav > header > p {
+    font-size: 1.2rem;
 }
 
 #equipments-nav > article {

@@ -30,6 +30,7 @@ const useHandleEquipmentBehavior = () => {
     const [_equipments, setEquipments] = useState<LastsEquipmentDatas[]>([])
     const [date, setDate] = useState<Date>(new Date("2021-02-01T03:00:00.000Z"));
     const [totalHours, setTotalHours] = useState<number>(1);
+    const [totalEarnings, setTotalEarnings] = useState<number>(0);
     const isInitialRender = useRef(true);
 
     const generateRandomColor = (): string => {
@@ -62,6 +63,7 @@ const useHandleEquipmentBehavior = () => {
         }
      
         let hash: LastsEquipmentDatas[] = _equipments || []
+        let _totalEarnings = 0;
 
         let existUpdate = false
 
@@ -125,6 +127,10 @@ const useHandleEquipmentBehavior = () => {
                     earning: lastState ? lastState.earning : 0
                 })
             }
+
+            // earnings
+            const equipmentTotalEarnings = newEarning.reduce((acc, curr) => acc + curr.earning, 0);
+            _totalEarnings += equipmentTotalEarnings;
             
             // updated
             let newUpdatedDate = existUpdate 
@@ -140,7 +146,7 @@ const useHandleEquipmentBehavior = () => {
                 color: _equipmentDataHistory?.color || generateRandomColor(),
                 lastUpdate: newUpdatedDate,
                 earningByTime: newEarning,
-                totalEarnings: newEarning.reduce((acc, curr) => acc + curr.earning, 0),
+                totalEarnings: equipmentTotalEarnings,
                 equipmentModelId: _equipmentModel?.id || '',
                 hoursOfProductivity: newHoursOfProductivity
             };
@@ -158,11 +164,13 @@ const useHandleEquipmentBehavior = () => {
         });
         
         setEquipments(hash)
+        setTotalEarnings(_totalEarnings)
     }, [date])
 
     return {
         _equipments,
-        totalHours
+        totalHours,
+        totalEarnings
     }
 }
 

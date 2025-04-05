@@ -28,7 +28,11 @@ interface EquipmentsNavProps {
 
 const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors, filter }) => {
 
-    const { totalHours } = useHandleEquipmentBehavior()
+    const { 
+        totalHours,
+        totalEarnings
+    } = useHandleEquipmentBehavior()
+    
     const [selectedEquipment, setSelectedEquipment] = useState<LastsEquipmentDatas>()
     const [openPositionsLog, setOpenPositionsLog]= useState<boolean>(false)
     const [openStatesLog, setOpenStatesLog]= useState<boolean>(false)
@@ -43,6 +47,7 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors, filte
                 !selectedEquipment &&
                 <header>
                     <h1>Equipments</h1>
+                    <p>Total earnings: <span style={{color: totalEarnings < 0 ? 'red' : ''}}>{`${totalEarnings}$`}</span></p>
                 </header>
             }
             {
