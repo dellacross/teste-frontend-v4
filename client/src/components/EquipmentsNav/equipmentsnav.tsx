@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './equipmentsnav.css'
 import useHandleEquipmentBehavior from '../../hooks/useHandleEquipmentBehavior';
 import { ArrowLeft, Box, DollarSign, Percent, Tractor } from 'lucide-react';
+import StatesChart from '../StatesChart/stateschart';
 
 type LastsEquipmentDatas = {
     equipmentId: string
@@ -12,7 +13,7 @@ type LastsEquipmentDatas = {
     color: string
     lastUpdate: string,
     earningByTime: { date: string, earning: number }[],
-    totalEarnings: number,
+    totalEarnings: number[],
     equipmentModelId: string,
     hoursOfProductivity: number
 }
@@ -40,6 +41,8 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors, filte
     const handleFilterDisplayEquipment = (modelId: string, stateId: string) => {
         return filter?.states.includes(stateId) && filter?.models.includes(modelId)
     }
+
+    useEffect(() => {console.log('se', selectedEquipment)}, [selectedEquipment])
 
     return (
         <div id="equipments-nav">
@@ -77,7 +80,7 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors, filte
                                         <b>State</b>
                                     </section>
                                     <section>
-                                        <p>{`${equipment?.totalEarnings}$`}</p>
+                                        <p>{`${equipment?.totalEarnings[equipment?.totalEarnings?.length-1]}$`}</p>
                                         <b>Earnings</b>
                                     </section>
                                     <section>
@@ -133,7 +136,7 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors, filte
                                     <DollarSign />
                                 </div>
                                 <p>
-                                    <span style={{color: selectedEquipment?.totalEarnings < 0 ? 'red' : ''}}>{`${selectedEquipment?.totalEarnings}$`}</span>
+                                    <span style={{color: selectedEquipment?.totalEarnings[selectedEquipment?.totalEarnings?.length-1] < 0 ? 'red' : ''}}>{`${selectedEquipment?.totalEarnings[selectedEquipment?.totalEarnings?.length-1]}$`}</span>
                                     <b>Earnings</b>
                                 </p>
                             </div>
@@ -149,6 +152,9 @@ const EquipmentsNav: React.FC<EquipmentsNavProps> = ({ equipments, colors, filte
                                     <b>Productivity</b>
                                 </p>
                             </div>
+                        </section>
+                        <section id="graph">
+                            <StatesChart selectedEquipment={selectedEquipment} />
                         </section>
                         <section id="datas">
                             <div className="info2">

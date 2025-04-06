@@ -43,11 +43,12 @@ const colors = [
 
 const Map = () => {
 
-    const { _equipments } = useHandleEquipmentBehavior()
+    const { equipments } = useHandleEquipmentBehavior()
 
     const [center, setCenter] = useState([0, 0]);
     const [zoom] = useState(11);
     const [loading, setLoading] = useState(true)
+
     const [openFilter, setOpenFilter] = useState(false)
 
     const [filter, setFilter] = useState({ models: [], states: [] })
@@ -87,15 +88,15 @@ const Map = () => {
     }
 
     useEffect(() => {
-        if (_equipments?.length === 0) return
+        if (equipments?.length === 0) return
 
-        const firstEquipment = _equipments[0];
+        const firstEquipment = equipments[0];
         const lat = firstEquipment?.positions[0]?.lat;
         const lon = firstEquipment?.positions[0]?.lon;
         setCenter([lat, lon]);
 
         setLoading(false)
-    }, [_equipments])
+    }, [equipments])
     
     return (
         <div id="map-wrapper">
@@ -112,7 +113,7 @@ const Map = () => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         {
-                            _equipments.map((equipment, index) => (
+                            equipments.map((equipment, index) => (
                                 handleFilterDisplayEquipment(equipment) &&
                                 <React.Fragment key={equipment.equipmentId}>
                                     <Marker
@@ -145,7 +146,7 @@ const Map = () => {
                 </div>
             }
             <EquipmentsNav
-                equipments={_equipments}
+                equipments={equipments}
                 colors={colors}
                 filter={filter}
             />

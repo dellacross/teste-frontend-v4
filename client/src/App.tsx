@@ -1,7 +1,7 @@
 import './styles/App.css';
 import Wrapper from './layout/Wrapper/wrapper';
 import NavBar from './layout/NavBar/navbar';
-import Map from './layout/Main/map';
+import Map from './layout/Map/map';
 
 function App() {
   return (

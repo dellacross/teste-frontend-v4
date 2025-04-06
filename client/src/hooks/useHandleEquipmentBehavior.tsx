@@ -20,14 +20,14 @@ type LastsEquipmentDatas = {
     color: string
     lastUpdate: string,
     earningByTime: { date: string, earning: number }[],
-    totalEarnings: number,
+    totalEarnings: number[],
     equipmentModelId: string,
     hoursOfProductivity?: number
 }
 
 const useHandleEquipmentBehavior = () => {
 
-    const [_equipments, setEquipments] = useState<LastsEquipmentDatas[]>([])
+    const [equipments, setEquipments] = useState<LastsEquipmentDatas[]>([])
     const [date, setDate] = useState<Date>(new Date("2021-02-01T03:00:00.000Z"));
     const [totalHours, setTotalHours] = useState<number>(1);
     const [totalEarnings, setTotalEarnings] = useState<number>(0);
@@ -62,7 +62,7 @@ const useHandleEquipmentBehavior = () => {
             return;
         }
      
-        let hash: LastsEquipmentDatas[] = _equipments || []
+        let hash: LastsEquipmentDatas[] = equipments || []
         let _totalEarnings = 0;
 
         let existUpdate = false
@@ -131,6 +131,10 @@ const useHandleEquipmentBehavior = () => {
             // earnings
             const equipmentTotalEarnings = newEarning.reduce((acc, curr) => acc + curr.earning, 0);
             _totalEarnings += equipmentTotalEarnings;
+
+            const newEarningsHistory = _equipmentDataHistory?.totalEarnings
+                ? [..._equipmentDataHistory.totalEarnings, equipmentTotalEarnings]
+                : [equipmentTotalEarnings];
             
             // updated
             let newUpdatedDate = existUpdate 
@@ -146,7 +150,7 @@ const useHandleEquipmentBehavior = () => {
                 color: _equipmentDataHistory?.color || generateRandomColor(),
                 lastUpdate: newUpdatedDate,
                 earningByTime: newEarning,
-                totalEarnings: equipmentTotalEarnings,
+                totalEarnings: newEarningsHistory,
                 equipmentModelId: _equipmentModel?.id || '',
                 hoursOfProductivity: newHoursOfProductivity
             };
@@ -168,7 +172,7 @@ const useHandleEquipmentBehavior = () => {
     }, [date])
 
     return {
-        _equipments,
+        equipments,
         totalHours,
         totalEarnings
     }
